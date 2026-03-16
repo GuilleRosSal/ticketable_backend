@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model User {
+  id       Int      @id(map: "user_pk") @default(autoincrement())
+  name     String   @db.VarChar(100)
+  surname  String   @db.VarChar(255)
+  email    String   @unique(map: "user_ak_email") @db.VarChar(100)
+  password String   @db.VarChar(100)
+  role     String   @db.VarChar(100)
+  ticket   ticket[]
+}
+
+model category {
+  id          Int      @id(map: "category_pk") @default(autoincrement())
+  category    String   @db.VarChar(255)
+  subcategory String   @unique(map: "category_ak_subcategory") @db.VarChar(255)
+  ticket      ticket[]
+}
+
+model clientimage {
+  ticket_id Int
+  url_image String @unique(map: "clientimage_ak_url_image") @db.VarChar(255)
+  id        Int    @id(map: "clientimage_pk") @default(autoincrement())
+  ticket    ticket @relation(fields: [ticket_id], references: [ticket_id], map: "clientimage_ticket")
+}
+
+model resolutionimage {
+  ticket_id Int
+  url_image String @unique(map: "resolutionimage_ak_url_image") @db.VarChar(255)
+  id        Int    @id(map: "resolutionimage_pk") @default(autoincrement())
+  ticket    ticket @relation(fields: [ticket_id], references: [ticket_id], map: "resolutionimage_ticket")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model ticket {
+  ticket_id       Int               @id(map: "ticket_pk") @default(autoincrement())
+  subject         String            @db.VarChar(255)
+  description     String            @db.VarChar(2000)
+  creation_date   DateTime          @db.Timestamp(6)
+  resolution_date DateTime?         @db.Timestamp(6)
+  state           String            @db.VarChar(100)
+  resolution      String?           @db.VarChar(2000)
+  category_id     Int
+  user_id         Int
+  clientimage     clientimage[]
+  resolutionimage resolutionimage[]
+  category        category          @relation(fields: [category_id], references: [id], map: "ticket_category")
+  User            User              @relation(fields: [user_id], references: [id], map: "ticket_user")
+}
