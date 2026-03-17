@@ -4,6 +4,8 @@ dotenv.config();
 import cors from 'cors';
 import express from 'express';
 
+import authRoutes from './routes/auth.routes.js';
+
 const app = express();
 
 app.use(cors());
@@ -13,6 +15,7 @@ const CLIENT_IMAGES_URL = process.env.CLIENT_IMAGES_URL;
 const RESOLUTION_IMAGES_URL = process.env.RESOLUTION_IMAGES_URL;
 
 //Routes
+app.use('/auth', authRoutes);
 
 //Routes for images view
 app.use('/view/imagescli', express.static(CLIENT_IMAGES_URL));
