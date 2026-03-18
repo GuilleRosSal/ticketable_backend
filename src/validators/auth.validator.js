@@ -50,5 +50,10 @@ export const validateLoginData = (req, res, next) => {
     return res.status(400).json({ error: error.msg });
   }
 
+  // Extra validations
+  if (!isEmail(email)) {
+    return res.status(400).json({ error: 'El formato del correo no es válido.' });
+  }
+
   next();
 };
