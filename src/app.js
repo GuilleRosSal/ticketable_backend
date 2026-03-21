@@ -6,6 +6,8 @@ import express from 'express';
 import swaggerUI from 'swagger-ui-express';
 import swaggerSpecs from './config/swagger.config.js';
 import authRoutes from './routes/auth.routes.js';
+import categoryRoutes from './routes/category.routes.js';
+import userRoutes from './routes/user.routes.js';
 
 const app = express();
 
@@ -17,6 +19,8 @@ const RESOLUTION_IMAGES_URL = process.env.RESOLUTION_IMAGES_URL;
 
 //Routes
 app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
+app.use('/category', categoryRoutes);
 
 //Documentation Routes
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpecs));

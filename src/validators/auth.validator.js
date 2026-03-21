@@ -1,11 +1,4 @@
-const emailRegex =
-  /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
-
-const validRoles = ['CLIENT'];
-
-const isEmail = (email) => emailRegex.test(email);
-
-const validRole = (role) => validRoles.includes(role);
+import { isEmail, validRole } from './shared.validator.js';
 
 export const validateRegisterData = (req, res, next) => {
   const { name, surname, email, password, role } = req.body;

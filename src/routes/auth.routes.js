@@ -145,7 +145,7 @@ router.post('/register', validateRegisterData, register);
  *                 format: password
  *                 example: "password123"
  *     responses:
- *       201:
+ *       200:
  *         description: Sesión iniciada con éxito. Devuelve el token de acceso y los datos del usuario.
  *         content:
  *           application/json:
