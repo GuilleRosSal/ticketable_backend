@@ -49,7 +49,16 @@ El servidor está desarrollado con Express y requiere la configuración de varia
    npm install
    ```
 
-2. **Configuración de las variables de entorno:**
+2. **Generación del Cliente de Prisma:**
+   Este proyecto utiliza Prisma como ORM. Para generar el cliente necesario para las consultas a la base de datos (ubicado en la carpeta generated/), ejecute el siguiente comando:
+
+   ```bash
+   npx prisma generate
+   ```
+
+   > **Nota:** Este paso es obligatorio tras la instalación de dependencias para que las importaciones del código funcionen correctamente.
+
+3. **Configuración de las variables de entorno:**
    A partir del fichero `.env.template` genera el fichero `.env` y configura las variables de entorno conforme se indica en los comentarios de la plantilla.
 
    > **Importante:** Si tu contraseña de PostgreSQL contiene caracteres especiales (como `@`, `#`, `!`), estos deben estar correctamente codificados en la variable `DATABASE_URL`. Por ejemplo, `@` se sustituye por `%40` y `!` por `%21`.
