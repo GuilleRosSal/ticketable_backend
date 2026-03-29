@@ -69,3 +69,9 @@ En el caso de querer únicamente lanzar el servidor sin estar este pendiente de 
 ```bash
 npm start
 ```
+
+### Documentación interactiva (Swagger)
+
+Los endpoints implementados se han documentado mediante Swagger. Por lo tanto, una vez se haya lanzado el servidor, se puede acceder a la URL `http://localhost:3000/api-docs` para probar y evaluar cada uno de ellos.
+
+> **Nota:** Si en el archivo `.env` se ha configurado un puerto distinto al `3000`, modifique dicho valor en la URL por el puerto especificado.
