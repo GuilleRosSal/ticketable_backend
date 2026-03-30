@@ -7,6 +7,8 @@ import swaggerUI from 'swagger-ui-express';
 import swaggerSpecs from './config/swagger.config.js';
 import authRoutes from './routes/auth.routes.js';
 import categoryRoutes from './routes/category.routes.js';
+import imageRoutes from './routes/image.routes.js';
+import ticketRoutes from './routes/ticket.routes.js';
 import userRoutes from './routes/user.routes.js';
 
 const app = express();
@@ -14,19 +16,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const CLIENT_IMAGES_URL = process.env.CLIENT_IMAGES_URL;
-const RESOLUTION_IMAGES_URL = process.env.RESOLUTION_IMAGES_URL;
-
 //Routes
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/category', categoryRoutes);
+app.use('/ticket', ticketRoutes);
 
 //Documentation Routes
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 
-//Routes for images view
-app.use('/view/imagescli', express.static(CLIENT_IMAGES_URL));
-app.use('/view/imagesres', express.static(RESOLUTION_IMAGES_URL));
+//Routes for showing images
+app.use('/image', imageRoutes);
 
 export default app;
