@@ -1,7 +1,6 @@
 import express from 'express';
 import { listCategories, listSubcategories, listSubcategoriesByCategory } from '../controllers/category.controller.js';
 import { authenticateToken } from '../services/access.service.js';
-import { validateListSubcategoryByCategoryData } from '../validators/category.validator.js';
 
 const router = express.Router();
 
@@ -174,16 +173,6 @@ router.get('/subcategories', authenticateToken, listSubcategories);
  *                     - subcategory: "No poder iniciar sesión o recuperar la contraseña"
  *                     - subcategory: "Acceso denegado a ciertas secciones o funciones"
  *                     - subcategory: "Roles y permisos mal configurados"
- *       400:
- *         description: Formato de categoría inválido.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Formato de categoría inválido."
  *       401:
  *         description: Usuario no autorizado.
  *         content:
@@ -217,11 +206,6 @@ router.get('/subcategories', authenticateToken, listSubcategories);
  *                   type: string
  *                   example: "Error al intentar listar las subcategorías."
  */
-router.get(
-  '/subcategories/:category',
-  authenticateToken,
-  validateListSubcategoryByCategoryData,
-  listSubcategoriesByCategory,
-);
+router.get('/subcategories/:category', authenticateToken, listSubcategoriesByCategory);
 
 export default router;

@@ -41,6 +41,15 @@ export const isAdmin = (req, res, next) => {
   }
 };
 
+//Secondary middleware to ensure user is a CLIENT. Use only when method authenticateToken() has been previously called
+export const isClient = (req, res, next) => {
+  if (req.user && req.user.role === 'CLIENT') {
+    next();
+  } else {
+    return res.status(403).json({ error: 'Acceso restringido.' });
+  }
+};
+
 //Secondary middleware to ensure the user accessing or updating user data is the one logged in. Use only when methods authenticateToken() and validateUserId() have been previously called
 export const isOwnerViaIdParam = (req, res, next) => {
   if (req.user && req.userId && req.user.id === req.userId) {

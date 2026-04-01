@@ -12,7 +12,7 @@ export const validateRegisterData = (req, res, next) => {
   ];
 
   // Required field validations
-  const error = requiredFields.find((f) => !f.val || f.val.trim() === '');
+  const error = requiredFields.find((field) => !field.val?.trim());
   if (error) {
     return res.status(400).json({ error: error.msg });
   }
@@ -38,7 +38,7 @@ export const validateLoginData = (req, res, next) => {
   ];
 
   // Required field validations
-  const error = requiredFields.find((f) => !f.val || f.val.trim() === '');
+  const error = requiredFields.find((field) => !field.val?.trim());
   if (error) {
     return res.status(400).json({ error: error.msg });
   }

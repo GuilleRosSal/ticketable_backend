@@ -31,3 +31,14 @@ export const getSubcategoriesByCategory = async (category) => {
 
   return subcategories;
 };
+
+export const getCategoryIdBySubcategory = async (subcategory) => {
+  const category = await prisma.category.findUnique({
+    select: {
+      id: true,
+    },
+    where: { subcategory },
+  });
+
+  return category;
+};
