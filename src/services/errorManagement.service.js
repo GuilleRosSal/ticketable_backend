@@ -5,7 +5,7 @@ export const deleteImagesIfError = (error, req, res, next) => {
     deleteImages(req.files);
   }
   const statusCode = error.statusCode || 500;
-  res.status(statusCode).json({ error: error.message || 'Se ha producido un error en el servidor' });
+  res.status(statusCode).json({ error: error.message || 'Se ha producido un error en el servidor.' });
 };
 
 export const errorBuilder = (message, statusCode = 500) => {

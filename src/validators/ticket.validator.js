@@ -40,7 +40,7 @@ export const validateFilterQueryParams = (req, res, next) => {
 };
 
 export const validateTicketCreation = (req, res, next) => {
-  const { category, subcategory, subject, description } = req.body;
+  const { category, subcategory, subject, description } = req.body || {};
 
   const requiredFields = [
     { val: category, msg: 'La categoría es obligatoria.' },
@@ -59,7 +59,7 @@ export const validateTicketCreation = (req, res, next) => {
 };
 
 export const validateTicketResolution = (req, res, next) => {
-  const { state, resolution } = req.body;
+  const { state, resolution } = req.body || {};
 
   if (!state?.trim()) {
     return next(errorBuilder('El estado es obligatorio.', 400));

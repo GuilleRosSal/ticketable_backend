@@ -79,14 +79,14 @@ export const resolveTicket = async (req, res, next) => {
       return next(errorBuilder('El estado de la incidencia no ha cambiado.', 400));
     }
 
-    const updatedTicket = await updateTicket(ticket_id, { state, resolution });
+    const ticket = await updateTicket(ticket_id, { state, resolution });
 
     let imageURLs = [];
     if (req.files && req.files.length > 0) {
       imageURLs = await storeResolutionImages(ticket_id, req.files);
     }
 
-    res.status(200).json({ updatedTicket, imageURLs });
+    res.status(200).json({ ticket, imageURLs });
   } catch (error) {
     return next(errorBuilder('Error al actualizar la incidencia.', 500));
   }

@@ -1,4 +1,4 @@
-import prisma from '../models/prisma.model';
+import prisma from '../models/prisma.model.js';
 
 export const storeClientImages = async (ticket_id, files) => {
   const BACKEND_URL = process.env.BACKEND_URL;

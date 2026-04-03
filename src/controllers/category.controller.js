@@ -1,6 +1,6 @@
 import {
   getCategories,
-  getCategoryIdBySubcategory,
+  getCategoryId,
   getSubcategories,
   getSubcategoriesByCategory,
 } from '../services/category.service.js';
@@ -36,9 +36,13 @@ export const listSubcategoriesByCategory = async (req, res) => {
   }
 };
 
-export const getCategoryId = async (req, res, next) => {
+export const findCategoryId = async (req, res, next) => {
   try {
-    const category = await getCategoryIdBySubcategory(req.body.subcategory);
+    const category = await getCategoryId(req.body.category, req.body.subcategory);
+
+    if (!category) {
+      return next(errorBuilder('No se ha encontrado la combinación de categoría y subcategoría especificada.', 400));
+    }
 
     req.category_id = category.id;
 
