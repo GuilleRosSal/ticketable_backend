@@ -1,7 +1,15 @@
 import { storeClientImages } from '../services/clientimage.service.js';
 import { errorBuilder } from '../services/errorManagement.service.js';
 import { storeResolutionImages } from '../services/resolutionimage.service.js';
-import { createTicket, getTicket, getTickets, getTicketState, updateTicket } from '../services/ticket.service.js';
+import {
+  countFilteredTickets,
+  createTicket,
+  getTicket,
+  getTickets,
+  getTicketState,
+  updateTicket,
+} from '../services/ticket.service.js';
+import { buildFilterWhereClause, calculatePagination } from '../utils/ticket.helper.js';
 
 export const getStates = (req, res) => {
   const states = ['OPEN', 'IN_PROGRESS', 'RESOLVED'];
@@ -31,10 +39,34 @@ export const getFilteredTickets = async (req, res) => {
     creation_date: req.query.creation_date,
   };
 
-  try {
-    const tickets = await getTickets(filters);
+  const where = buildFilterWhereClause(filters);
 
-    res.status(200).json({ tickets });
+  try {
+    let paginator_data = null;
+    let paginationOptions = {};
+
+    if (req.pagination) {
+      const totalTickets = await countFilteredTickets(where);
+
+      const { currentPage, lastPage, skip } = calculatePagination(
+        req.pagination.page,
+        req.pagination.limit,
+        totalTickets,
+      );
+
+      paginationOptions = { skip, itemsPerPage: req.pagination.limit };
+
+      paginator_data = {
+        current_page: currentPage,
+        last_page: lastPage,
+        items_per_page: req.pagination.limit,
+        total_items: totalTickets,
+      };
+    }
+
+    const tickets = await getTickets(where, paginationOptions);
+
+    res.status(200).json({ tickets, paginator_data });
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener el listado de incidencias.' });
   }

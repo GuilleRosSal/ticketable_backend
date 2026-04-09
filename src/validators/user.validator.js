@@ -1,9 +1,9 @@
-import { isEmail } from './shared.validator.js';
+import { isEmail, isValidPositiveNumber } from './shared.validator.js';
 
 export const validateUserId = (req, res, next) => {
   const numericId = Number(req.params.id);
 
-  if (!Number.isInteger(numericId) || numericId <= 0) {
+  if (!isValidPositiveNumber(numericId)) {
     return res.status(400).json({ error: 'El parámetro ID debe ser un número entero positivo.' });
   }
 

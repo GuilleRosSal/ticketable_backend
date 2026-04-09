@@ -1,5 +1,5 @@
 import { errorBuilder } from '../services/errorManagement.service.js';
-import { isEmail } from './shared.validator.js';
+import { isEmail, isValidPositiveNumber } from './shared.validator.js';
 
 const validStates = ['OPEN', 'IN_PROGRESS', 'RESOLVED'];
 
@@ -16,7 +16,7 @@ const isValidUpdateState = (state) => {
 export const validateTicketId = (req, res, next) => {
   const numericId = Number(req.params.id);
 
-  if (!Number.isInteger(numericId) || numericId <= 0) {
+  if (!isValidPositiveNumber(numericId)) {
     return res.status(400).json({ error: 'El parámetro ID debe ser un número entero positivo.' });
   }
 
@@ -37,6 +37,39 @@ export const validateFilterQueryParams = (req, res, next) => {
   }
 
   next();
+};
+
+export const validateFilterPagination = (req, res, next) => {
+  const { page, limit } = req.query;
+
+  if (!page && !limit) {
+    return next();
+  }
+
+  if (page && limit) {
+    const numericPage = Number(page);
+    const numericLimit = Number(limit);
+
+    if (!isValidPositiveNumber(numericPage)) {
+      return res.status(400).json({ error: 'El número de página debe ser un número entero positivo.' });
+    }
+
+    if (!isValidPositiveNumber(numericLimit)) {
+      return res.status(400).json({ error: 'El número de elementos por página debe ser un número entero positivo.' });
+    }
+
+    req.pagination = {
+      page: numericPage,
+      limit: numericLimit,
+    };
+
+    return next();
+  }
+
+  return res.status(400).json({
+    error:
+      'Para utilizar el paginador es necesario proporcinar tanto el número de página como el número de elementos en ella.',
+  });
 };
 
 export const validateTicketCreation = (req, res, next) => {

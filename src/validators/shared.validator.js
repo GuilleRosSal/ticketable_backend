@@ -6,3 +6,5 @@ const validRoles = ['CLIENT'];
 export const isEmail = (email) => emailRegex.test(email);
 
 export const validRole = (role) => validRoles.includes(role);
+
+export const isValidPositiveNumber = (number) => Number.isInteger(number) && number > 0;

@@ -11,6 +11,7 @@ import { authenticateToken, isAdmin, isClient } from '../services/access.service
 import { deleteImagesIfError } from '../services/errorManagement.service.js';
 import { checkImagesSize, uploadClientImages, uploadResolutionImages } from '../services/image.service.js';
 import {
+  validateFilterPagination,
   validateFilterQueryParams,
   validateTicketCreation,
   validateTicketId,
@@ -141,6 +142,23 @@ const router = express.Router();
  *                     type: string
  *                     format: email
  *                     example: guillem.rosell@example.com
+ *         paginator_data:
+ *           nullable: true
+ *           type: object
+ *           properties:
+ *             current_page:
+ *               type: integer
+ *               example: 1
+ *             last_page:
+ *               type: integer
+ *               example: 10
+ *             items_per_page:
+ *               type: integer
+ *               example: 8
+ *             total_items:
+ *               type: integer
+ *               example: 76
+ *
  */
 
 /**
@@ -383,7 +401,7 @@ router.get('/:id', authenticateToken, validateTicketId, getTicketData);
  * /ticket/:
  *   get:
  *     summary: Listado de incidencias con opciones de filtrado.
- *     description: Devuelve una lista de incidencias filtradas según los parámetros proporcionados.
+ *     description: Devuelve una lista de incidencias filtradas según los parámetros proporcionados. Adicionalmente, si se proporcionan los parámetros 'page' y 'limit' se añade paginación al resultado.
  *     tags: [Incidencias]
  *     security:
  *       - bearerAuth: []
@@ -426,6 +444,20 @@ router.get('/:id', authenticateToken, validateTicketId, getTicketData);
  *           format: date-time
  *           description: Fecha de creación de la incidencia.
  *           example: 2026-04-02T15:54:34.285Z
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           description: Página de la cual se quieren obtener los tickets.
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           description: Número de tickets por página.
+ *           example: 8
  *     responses:
  *       200:
  *         description: Devuelve la lista de incidencias filtradas.
@@ -434,7 +466,7 @@ router.get('/:id', authenticateToken, validateTicketId, getTicketData);
  *             schema:
  *               $ref: '#/components/schemas/FilteredTicketsResponse'
  *       400:
- *         description: Parámetros de filtrado inválidos.
+ *         description: Parámetros de filtrado o paginación inválidos.
  *         content:
  *           application/json:
  *             schema:
@@ -443,6 +475,9 @@ router.get('/:id', authenticateToken, validateTicketId, getTicketData);
  *                 error:
  *                   type: string
  *                   oneOf:
+ *                     - example: "Para utilizar el paginador es necesario proporcinar tanto el número de página como el número de elementos en ella."
+ *                     - example: "El número de página debe ser un número entero positivo."
+ *                     - example: "El número de elementos por página debe ser un número entero positivo."
  *                     - example: "El formato del correo no es válido."
  *                     - example: "El estado indicado no es válido."
  *       401:
@@ -478,7 +513,7 @@ router.get('/:id', authenticateToken, validateTicketId, getTicketData);
  *                   type: string
  *                   example: "Error al obtener el listado de incidencias."
  */
-router.get('/', authenticateToken, validateFilterQueryParams, getFilteredTickets);
+router.get('/', authenticateToken, validateFilterPagination, validateFilterQueryParams, getFilteredTickets);
 
 /**
  * @swagger

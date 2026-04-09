@@ -1,18 +1,16 @@
 import prisma from '../models/prisma.model.js';
 
 export const getTicketState = async (ticket_id) => {
-  const ticket = await prisma.ticket.findUnique({
+  return await prisma.ticket.findUnique({
     select: {
       state: true,
     },
     where: { ticket_id },
   });
-
-  return ticket;
 };
 
 export const getTicket = async (id) => {
-  const ticket = await prisma.ticket.findUnique({
+  return await prisma.ticket.findUnique({
     select: {
       ticket_id: true,
       subject: true,
@@ -51,29 +49,10 @@ export const getTicket = async (id) => {
       ticket_id: id,
     },
   });
-
-  return ticket;
 };
 
-export const getTickets = async ({ category, subcategory, email, state, creation_date }) => {
-  const where = {};
-
-  if (category || subcategory) {
-    where.category = {};
-    if (category) where.category.category = category;
-    if (subcategory) where.category.subcategory = subcategory;
-  }
-
-  if (email) where.User = { email };
-  if (state) where.state = state;
-  if (creation_date) {
-    const dateFilter = new Date(creation_date);
-    where.creation_date = {
-      lte: dateFilter,
-    };
-  }
-
-  const tickets = await prisma.ticket.findMany({
+export const getTickets = async (where, { skip, itemsPerPage } = {}) => {
+  return await prisma.ticket.findMany({
     select: {
       ticket_id: true,
       subject: true,
@@ -92,13 +71,19 @@ export const getTickets = async ({ category, subcategory, email, state, creation
       },
     },
     where,
+    skip: skip || undefined,
+    take: itemsPerPage || undefined,
   });
+};
 
-  return tickets;
+export const countFilteredTickets = async (where) => {
+  return await prisma.ticket.count({
+    where,
+  });
 };
 
 export const createTicket = async ({ subject, description, user_id, category_id }) => {
-  const ticket = await prisma.ticket.create({
+  return await prisma.ticket.create({
     data: {
       subject,
       description,
@@ -108,8 +93,6 @@ export const createTicket = async ({ subject, description, user_id, category_id 
       user_id,
     },
   });
-
-  return ticket;
 };
 
 export const updateTicket = async (ticket_id, { state, resolution = null }) => {
@@ -120,10 +103,8 @@ export const updateTicket = async (ticket_id, { state, resolution = null }) => {
     data.resolution_date = new Date();
   }
 
-  const updatedTicket = await prisma.ticket.update({
+  return await prisma.ticket.update({
     where: { ticket_id },
     data,
   });
-
-  return updatedTicket;
 };
