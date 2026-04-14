@@ -1,29 +1,35 @@
 import prisma from '../models/prisma.model.js';
 
 export const getCategories = async () => {
-  return await prisma.category.findMany({
+  const categories = await prisma.category.findMany({
     select: {
       category: true,
     },
     distinct: ['category'],
   });
+
+  return categories.map((item) => item.category);
 };
 
 export const getSubcategories = async () => {
-  return await prisma.category.findMany({
+  const subcategories = await prisma.category.findMany({
     select: {
       subcategory: true,
     },
   });
+
+  return subcategories.map((item) => item.subcategory);
 };
 
 export const getSubcategoriesByCategory = async (category) => {
-  return await prisma.category.findMany({
+  const subcategories = await prisma.category.findMany({
     select: {
       subcategory: true,
     },
     where: { category },
   });
+
+  return subcategories.map((item) => item.subcategory);
 };
 
 export const getCategoryId = async (category, subcategory) => {

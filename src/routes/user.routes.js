@@ -32,13 +32,8 @@ const router = express.Router();
  *                 emails:
  *                   type: array
  *                   items:
- *                     type: object
- *                     properties:
- *                       email:
- *                         type: string
- *                   example:
- *                     - email: "guillem.rosell@example.com"
- *                     - email: "test@test.es"
+ *                     type: string
+ *                   example: ["guillem.rosell@example.com", "test@test.es"]
  *       401:
  *         description: Usuario no autorizado.
  *         content:

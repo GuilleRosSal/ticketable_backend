@@ -72,19 +72,13 @@ const router = express.Router();
  *             clientimage:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   url_image:
- *                     type: string
- *                     example: "http://localhost:3000/image/clientimage/clientimage1_ticket1618033988749894848.png"
+ *                 type: string
+ *               example: ["http://localhost:3000/image/clientimage/clientimage1_ticket1618033988749894848.png", "http://localhost:3000/image/clientimage/clientimage2_ticket1618033988749894848.png"]
  *             resolutionimage:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   url_image:
- *                     type: string
- *                     example: "http://localhost:3000/image/resolutionimage/resolutionimage1_ticket1618033988749894848.png"
+ *                 type: string
+ *               example: ["http://localhost:3000/image/resolutionimage/resolutionimage1_ticket1618033988749894848.png", "http://localhost:3000/image/resolutionimage/resolutionimage2_ticket1618033988749894848.png"]
  *             User:
  *               type: object
  *               properties:

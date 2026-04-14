@@ -10,7 +10,7 @@ export const getTicketState = async (ticket_id) => {
 };
 
 export const getTicket = async (id) => {
-  return await prisma.ticket.findUnique({
+  const ticket = await prisma.ticket.findUnique({
     select: {
       ticket_id: true,
       subject: true,
@@ -49,6 +49,16 @@ export const getTicket = async (id) => {
       ticket_id: id,
     },
   });
+
+  if (!ticket) {
+    return null;
+  }
+
+  return {
+    ...ticket,
+    clientimage: ticket.clientimage.map((image) => image.url_image),
+    resolutionimage: ticket.resolutionimage.map((image) => image.url_image),
+  };
 };
 
 export const getTickets = async (where, { skip, itemsPerPage } = {}) => {

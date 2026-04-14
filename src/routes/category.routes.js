@@ -31,14 +31,8 @@ const router = express.Router();
  *                 categories:
  *                   type: array
  *                   items:
- *                     type: object
- *                     properties:
- *                       category:
- *                         type: string
- *                   example:
- *                     - category: "Accesibilidad y Autenticación"
- *                     - category: "Problemas Técnicos y Errores"
- *                     - category: "Seguridad y Datos"
+ *                     type: string
+ *                   example: ["Accesibilidad y Autenticación", "Problemas Técnicos y Errores", "Seguridad y Datos"]
  *       401:
  *         description: Usuario no autorizado.
  *         content:
@@ -94,14 +88,8 @@ router.get('/categories', authenticateToken, listCategories);
  *                 subcategories:
  *                   type: array
  *                   items:
- *                     type: object
- *                     properties:
- *                       subcategory:
- *                         type: string
- *                   example:
- *                     - subcategory: "No poder iniciar sesión o recuperar la contraseña"
- *                     - subcategory: "Errores al cargar o procesar datos"
- *                     - subcategory: "Accesos no autorizados o sospechosos"
+ *                     type: string
+ *                   example: ["No poder iniciar sesión o recuperar la contraseña", "Errores al cargar o procesar datos", "Accesos no autorizados o sospechosos"]
  *       401:
  *         description: Usuario no autorizado.
  *         content:
@@ -165,14 +153,8 @@ router.get('/subcategories', authenticateToken, listSubcategories);
  *                 subcategories:
  *                   type: array
  *                   items:
- *                     type: object
- *                     properties:
- *                       subcategory:
- *                         type: string
- *                   example:
- *                     - subcategory: "No poder iniciar sesión o recuperar la contraseña"
- *                     - subcategory: "Acceso denegado a ciertas secciones o funciones"
- *                     - subcategory: "Roles y permisos mal configurados"
+ *                     type: string
+ *                   example: ["No poder iniciar sesión o recuperar la contraseña", "Acceso denegado a ciertas secciones o funciones", "Roles y permisos mal configurados"]
  *       401:
  *         description: Usuario no autorizado.
  *         content:

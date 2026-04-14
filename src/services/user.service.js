@@ -13,8 +13,8 @@ export const getProfileData = async (id) => {
   });
 };
 
-export const getEmails = async () => {
-  return await prisma.user.findMany({
+export const getClientEmails = async () => {
+  const emails = await prisma.user.findMany({
     select: {
       email: true,
     },
@@ -22,6 +22,8 @@ export const getEmails = async () => {
       role: 'CLIENT',
     },
   });
+
+  return emails.map((item) => item.email);
 };
 
 export const updateProfileData = async (id, { name, surname, email }) => {

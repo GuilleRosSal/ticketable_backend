@@ -1,6 +1,12 @@
 import { generateToken } from '../services/access.service.js';
 import { comparePassword, hashPassword } from '../services/password.service.js';
-import { getEmails, getPassword, getProfileData, updatePassword, updateProfileData } from '../services/user.service.js';
+import {
+  getClientEmails,
+  getPassword,
+  getProfileData,
+  updatePassword,
+  updateProfileData,
+} from '../services/user.service.js';
 
 export const getUserData = async (req, res) => {
   try {
@@ -18,7 +24,7 @@ export const getUserData = async (req, res) => {
 
 export const listEmails = async (req, res) => {
   try {
-    const emails = await getEmails();
+    const emails = await getClientEmails();
 
     res.status(200).json({ emails });
   } catch (error) {
