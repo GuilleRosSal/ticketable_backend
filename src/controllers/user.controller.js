@@ -40,7 +40,7 @@ export const updateUserData = async (req, res) => {
 
     const token = generateToken(updatedUser);
 
-    res.status(200).json({ token, updatedUser });
+    res.status(200).json({ token, user: updatedUser });
   } catch (error) {
     if (error.code === 'P2002') {
       return res.status(400).json({ error: `El correo electrónico: ${email} ya está en uso.` });

@@ -200,7 +200,7 @@ router.get('/:id', authenticateToken, validateUserId, isOwnerViaIdParam, getUser
  *                 token:
  *                   type: string
  *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJndWlsbGVyb3NzYWxAdW9jLmVkdSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3Mzc3OTc0NSwiZXhwIjoxNzczNzg2OTQ1fQ.Bnnw1ecP3Tz_w3PLHmCxKgpBW2yu9J_QXJX_s2rQBdU"
- *                 updatedUser:
+ *                 user:
  *                   $ref: '#/components/schemas/AuthUser'
  *       400:
  *         description: Error de validación o conflicto.
