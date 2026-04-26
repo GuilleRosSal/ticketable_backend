@@ -56,12 +56,14 @@ El servidor está desarrollado con Express y requiere la configuración de varia
    npx prisma generate
    ```
 
-   > **Nota:** Este paso es obligatorio tras la instalación de dependencias para que las importaciones del código funcionen correctamente.
+> [!NOTE]
+> Este paso es obligatorio tras la instalación de dependencias para que las importaciones del código funcionen correctamente.
 
 3. **Configuración de las variables de entorno:**
    A partir del fichero `.env.template` genera el fichero `.env` y configura las variables de entorno conforme se indica en los comentarios de la plantilla.
 
-   > **Importante:** Si tu contraseña de PostgreSQL contiene caracteres especiales (como `@`, `#`, `!`), estos deben estar correctamente codificados en la variable `DATABASE_URL`. Por ejemplo, `@` se sustituye por `%40` y `!` por `%21`.
+> [!IMPORTANT]
+> Si tu contraseña de PostgreSQL contiene caracteres especiales (como `@`, `#`, `!`), estos deben estar correctamente codificados en la variable `DATABASE_URL`. Por ejemplo, `@` se sustituye por `%40` y `!` por `%21`.
 
 ---
 
@@ -83,4 +85,5 @@ npm start
 
 Los endpoints implementados se han documentado mediante Swagger. Por lo tanto, una vez se haya lanzado el servidor, se puede acceder a la URL `http://localhost:3000/api-docs` para probar y evaluar cada uno de ellos.
 
-> **Nota:** Si en el archivo `.env` se ha configurado un puerto distinto al `3000`, modifique dicho valor en la URL por el puerto especificado.
+> [!NOTE]
+> Si en el archivo `.env` se ha configurado un puerto distinto al `3000`, modifique dicho valor en la URL por el puerto especificado.
