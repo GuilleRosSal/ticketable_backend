@@ -92,20 +92,39 @@ export const countFilteredTickets = async (where) => {
   });
 };
 
-export const createTicket = async ({ subject, description, user_id, category_id }) => {
-  return await prisma.ticket.create({
-    data: {
-      subject,
-      description,
-      creation_date: new Date(),
-      state: 'OPEN',
-      category_id,
-      user_id,
-    },
+export const createTicketWithImages = async ({ subject, description, user_id, category_id }, files) => {
+  return await prisma.$transaction(async (tx) => {
+    const ticket = await tx.ticket.create({
+      data: {
+        subject,
+        description,
+        creation_date: new Date(),
+        state: 'OPEN',
+        category_id,
+        user_id,
+      },
+    });
+
+    let imageURLs = [];
+
+    if (files && files.length > 0) {
+      const imageData = files.map((file) => ({
+        ticket_id: ticket.ticket_id,
+        url_image: file.url,
+      }));
+
+      await tx.clientimage.createMany({
+        data: imageData,
+      });
+
+      imageURLs = files.map((image) => image.url);
+    }
+
+    return { ticket, imageURLs };
   });
 };
 
-export const updateTicket = async (ticket_id, { state, resolution = null }) => {
+export const updateTicketWithImages = async (ticket_id, { state, resolution = null }, files) => {
   const data = { state };
 
   if (resolution) {
@@ -113,8 +132,27 @@ export const updateTicket = async (ticket_id, { state, resolution = null }) => {
     data.resolution_date = new Date();
   }
 
-  return await prisma.ticket.update({
-    where: { ticket_id },
-    data,
+  return await prisma.$transaction(async (tx) => {
+    const ticket = await tx.ticket.update({
+      where: { ticket_id },
+      data,
+    });
+
+    let imageURLs = [];
+
+    if (files && files.length > 0) {
+      const imageData = files.map((file) => ({
+        ticket_id,
+        url_image: file.url,
+      }));
+
+      await tx.resolutionimage.createMany({
+        data: imageData,
+      });
+
+      imageURLs = files.map((image) => image.url);
+    }
+
+    return { ticket, imageURLs };
   });
 };

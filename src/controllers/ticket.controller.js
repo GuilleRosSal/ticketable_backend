@@ -1,13 +1,11 @@
-import { storeClientImages } from '../services/clientimage.service.js';
 import { errorBuilder } from '../services/errorManagement.service.js';
-import { storeResolutionImages } from '../services/resolutionimage.service.js';
 import {
   countFilteredTickets,
-  createTicket,
+  createTicketWithImages,
   getTicket,
   getTickets,
   getTicketState,
-  updateTicket,
+  updateTicketWithImages,
 } from '../services/ticket.service.js';
 import { buildFilterWhereClause, calculatePagination } from '../utils/ticket.helper.js';
 
@@ -76,14 +74,10 @@ export const openTicket = async (req, res, next) => {
   const { subject, description } = req.body;
   const user_id = req.user.id;
   const category_id = req.category_id;
+  const files = req.cloudinaryFiles || [];
 
   try {
-    const ticket = await createTicket({ subject, description, user_id, category_id });
-
-    let imageURLs = [];
-    if (req.cloudinaryFiles && req.cloudinaryFiles.length > 0) {
-      imageURLs = await storeClientImages(ticket.ticket_id, req.cloudinaryFiles);
-    }
+    const { ticket, imageURLs } = await createTicketWithImages({ subject, description, user_id, category_id }, files);
 
     res.status(201).json({ ticket, imageURLs });
   } catch (error) {
@@ -94,6 +88,7 @@ export const openTicket = async (req, res, next) => {
 export const resolveTicket = async (req, res, next) => {
   const { state, resolution } = req.body;
   const ticket_id = req.ticketId;
+  const files = req.cloudinaryFiles || [];
 
   try {
     const ticketWithState = await getTicketState(ticket_id);
@@ -111,12 +106,7 @@ export const resolveTicket = async (req, res, next) => {
       return next(errorBuilder('El estado de la incidencia no ha cambiado.', 400));
     }
 
-    const ticket = await updateTicket(ticket_id, { state, resolution });
-
-    let imageURLs = [];
-    if (req.cloudinaryFiles && req.cloudinaryFiles.length > 0) {
-      imageURLs = await storeResolutionImages(ticket_id, req.cloudinaryFiles);
-    }
+    const { ticket, imageURLs } = await updateTicketWithImages(ticket_id, { state, resolution }, files);
 
     res.status(200).json({ ticket, imageURLs });
   } catch (error) {

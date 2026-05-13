@@ -121,7 +121,7 @@ export const uploadImagesToCloudinary = async (req, res, next) => {
 
     next();
   } catch (error) {
-    return next(errorBuilder('Error al subir las imágenes', 500));
+    return next(errorBuilder('Error al subir las imágenes.', 500));
   }
 };
 
