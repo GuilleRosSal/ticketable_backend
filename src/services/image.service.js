@@ -1,11 +1,22 @@
 import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
+import cloudinary from '../config/cloudinary.config.js';
+import { errorBuilder } from './errorManagement.service.js';
 
+/* Deprecated since version 2.0.0
 const UPLOAD_CONFIGS = {
   cli: { url: process.env.CLIENT_IMAGES_URL, prefix: 'clientimage' },
   res: { url: process.env.RESOLUTION_IMAGES_URL, prefix: 'resolutionimage' },
 };
+*/
+
+const UPLOAD_CONFIGS = {
+  cli: { prefix: 'clientimage' },
+  res: { prefix: 'resolutionimage' },
+};
+
+const TEMP_UPLOAD_URL = process.env.IMG_STORAGE;
 
 const VALID_FORMATS = {
   '.png': true,
@@ -21,7 +32,7 @@ const createUploadMiddleware = (type) => {
   const storage = multer.diskStorage({
     // Function to state the storage route
     destination: (req, file, cb) => {
-      cb(null, config.url);
+      cb(null, TEMP_UPLOAD_URL);
     },
 
     // Function to modify the file name
@@ -73,9 +84,55 @@ export const checkImagesSize = (req, res, next) => {
 export const deleteImages = (files) => {
   if (files) {
     files.forEach((file) => {
-      fs.unlink(path.normalize(file.path), (error) => {
-        if (error) console.error('Error eliminando archivo:', error);
-      });
+      const filePath = path.normalize(file.path);
+
+      if (fs.existsSync(filePath)) {
+        fs.unlink(filePath, (error) => {
+          if (error) console.error('Error eliminando archivo:', error);
+        });
+      }
     });
+  }
+};
+
+// Cloudinary image management functions
+export const uploadImagesToCloudinary = async (req, res, next) => {
+  if (!req.files || req.files.length === 0) return next();
+  req.cloudinaryFiles = [];
+
+  try {
+    for (const image of req.files) {
+      const folderName = image.filename.startsWith('clientimage') ? 'client' : 'resolution';
+
+      const result = await cloudinary.uploader.upload(image.path, {
+        folder: `tfm_tickets/${folderName}`,
+        resource_type: 'auto',
+      });
+
+      if (fs.existsSync(image.path)) {
+        fs.unlinkSync(image.path);
+      }
+
+      req.cloudinaryFiles.push({
+        url: result.secure_url,
+        publicId: result.public_id,
+      });
+    }
+
+    next();
+  } catch (error) {
+    return next(errorBuilder('Error al subir las imágenes', 500));
+  }
+};
+
+export const deleteImagesFromCloudinary = async (cloudinaryFiles) => {
+  if (cloudinaryFiles) {
+    try {
+      for (const image of cloudinaryFiles) {
+        await cloudinary.uploader.destroy(image.publicId);
+      }
+    } catch (error) {
+      console.error('Error al eliminar de Cloudinary:', error);
+    }
   }
 };

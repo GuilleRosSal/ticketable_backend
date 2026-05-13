@@ -81,8 +81,8 @@ export const openTicket = async (req, res, next) => {
     const ticket = await createTicket({ subject, description, user_id, category_id });
 
     let imageURLs = [];
-    if (req.files && req.files.length > 0) {
-      imageURLs = await storeClientImages(ticket.ticket_id, req.files);
+    if (req.cloudinaryFiles && req.cloudinaryFiles.length > 0) {
+      imageURLs = await storeClientImages(ticket.ticket_id, req.cloudinaryFiles);
     }
 
     res.status(201).json({ ticket, imageURLs });
@@ -114,8 +114,8 @@ export const resolveTicket = async (req, res, next) => {
     const ticket = await updateTicket(ticket_id, { state, resolution });
 
     let imageURLs = [];
-    if (req.files && req.files.length > 0) {
-      imageURLs = await storeResolutionImages(ticket_id, req.files);
+    if (req.cloudinaryFiles && req.cloudinaryFiles.length > 0) {
+      imageURLs = await storeResolutionImages(ticket_id, req.cloudinaryFiles);
     }
 
     res.status(200).json({ ticket, imageURLs });

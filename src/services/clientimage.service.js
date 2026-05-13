@@ -1,11 +1,9 @@
 import prisma from '../models/prisma.model.js';
 
 export const storeClientImages = async (ticket_id, files) => {
-  const BACKEND_URL = process.env.BACKEND_URL;
-
   const imageData = files.map((file) => ({
     ticket_id,
-    url_image: `${BACKEND_URL}/image/clientimage/${file.filename}`,
+    url_image: file.url,
   }));
 
   await prisma.clientimage.createMany({

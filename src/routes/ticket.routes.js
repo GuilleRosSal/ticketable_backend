@@ -9,7 +9,12 @@ import {
 } from '../controllers/ticket.controller.js';
 import { authenticateToken, isAdmin, isClient } from '../services/access.service.js';
 import { deleteImagesIfError } from '../services/errorManagement.service.js';
-import { checkImagesSize, uploadClientImages, uploadResolutionImages } from '../services/image.service.js';
+import {
+  checkImagesSize,
+  uploadClientImages,
+  uploadImagesToCloudinary,
+  uploadResolutionImages,
+} from '../services/image.service.js';
 import {
   validateFilterPagination,
   validateFilterQueryParams,
@@ -610,6 +615,7 @@ router.get('/', authenticateToken, validateFilterPagination, validateFilterQuery
  *                   type: string
  *                   oneOf:
  *                     - example: "Error al intentar obtener el id de la categoría especificada."
+ *                     - example: "Error al subir las imágenes."
  *                     - example: "Error al abrir la incidencia."
  *                     - example: "Se ha producido un error en el servidor."
  */
@@ -621,6 +627,7 @@ router.post(
   checkImagesSize,
   validateTicketCreation,
   findCategoryId,
+  uploadImagesToCloudinary,
   openTicket,
   deleteImagesIfError,
 );
@@ -736,6 +743,7 @@ router.post(
  *                 error:
  *                   type: string
  *                   oneOf:
+ *                     - example: "Error al subir las imágenes."
  *                     - example: "Error al actualizar la incidencia."
  *                     - example: "Se ha producido un error en el servidor."
  */
@@ -747,6 +755,7 @@ router.put(
   uploadResolutionImages,
   checkImagesSize,
   validateTicketResolution,
+  uploadImagesToCloudinary,
   resolveTicket,
   deleteImagesIfError,
 );
