@@ -1,89 +1,79 @@
-# Sistema de Gestión de Incidencias - Guía de Despliegue
+# Sistema de Gestión de Incidencias (v2.0.0) - Guía de Configuración
 
-Este documento contiene las instrucciones necesarias para configurar y ejecutar el entorno de desarrollo del proyecto.
+Este proyecto es una API REST para la gestión de tickets, migrada en su versión 2.0.0 a una arquitectura Cloud con persistencia gestionada y almacenamiento de imágenes en la nube.
 
 ## 1. Requisitos Previos
 
-Antes de comenzar, asegúrate de tener instalado:
-
-- **Node.js** (v24.0.0 o superior)
-- **PostgreSQL** (v18 o superior)
-
----
-
-## 2. Configuración de la Base de Datos (PostgreSQL)
-
-El sistema utiliza PostgreSQL para la persistencia de datos. Sigue estos pasos para recrear el entorno:
-
-1. **Crear la Base de Datos:**
-   Crea una base de datos vacía (ej: `ticket_management_db`).
-
-2. **Ejecutar Scripts SQL:**
-   Localiza la carpeta `/database` a la altura de la carpeta que contiene este proyecto y ejecuta los archivos en el siguiente orden para garantizar la integridad de las claves foráneas:
-   - `Ticket_management_create.sql`: Crea las tablas, relaciones y restricciones.
-   - `Ticket_management_triggers.sql`: Crea los triggers encargados de limitar el número de imágenes de clientes y de resolución.
-   - `Inserts_categories.sql`: Añade los datos de las categorías y subcategorías en las que se podrán clasificar las incidencias.
-   - `Inserts_users.sql`: Añade los datos de varios usuarios.
-
-3. **Usuarios de Prueba:**
-   Para facilitar la evaluación, se han preconfigurado los siguientes accesos. Las contraseñas se corresponden con la parte inicial del email:
-
-   | Rol               | Usuario (Email)    | Contraseña |
-   | :---------------- | :----------------- | :--------- |
-   | **Administrador** | `admin@gmail.com`  | `admin`    |
-   | **Administrador** | `eduard@gmail.com` | `eduard`   |
-   | **Cliente**       | `test@gmail.com`   | `test`     |
-   | **Cliente**       | `marta@gmail.com`  | `marta`    |
-   | **Cliente**       | `camilo@gmail.com` | `camilo`   |
+- **[Node.js](https://nodejs.org)** (v24.0.0 o superior)
+- **Cuenta de [Neon](https://neon.com)** (PostgreSQL Serverless)
+- **Cuenta de [Cloudinary](https://cloudinary.com)** (Gestión de imágenes)
 
 ---
 
-## 3. Configuración del Backend (Node.js)
+## 2. Configuración de Servicios Cloud
 
-El servidor está desarrollado con Express y requiere la configuración de variables de entorno para su correcto funcionamiento. Para realizar su configuración realiza las siguientes acciones:
+### A. Base de Datos (Neon)
 
-1. **Instalación de dependencias:**
-   Desde la raíz del proyecto, ejecuta:
-
-   ```bash
-   npm install
-   ```
-
-2. **Generación del Cliente de Prisma:**
-   Este proyecto utiliza Prisma como ORM. Para generar el cliente necesario para las consultas a la base de datos (ubicado en la carpeta generated/), ejecute el siguiente comando:
-
-   ```bash
-   npx prisma generate
-   ```
+1. Crea un proyecto en [Neon](https://neon.com).
+2. Selecciona la región que más te convenga según tu residencia.
+3. En el panel de **SQL Editor**, ejecuta tus scripts de la carpeta `/database` en este orden:
+   - `Ticket_management_create.sql`
+   - `Ticket_management_triggers.sql`
+   - `Inserts_categories.sql` e `Inserts_users.sql`.
 
 > [!NOTE]
-> Este paso es obligatorio tras la instalación de dependencias para que las importaciones del código funcionen correctamente.
+> Para optimizar la latencia desde España, se recomienda utilizar la región **AWS Europe Central 1 (Frankfurt)** en la configuración de Neon.
 
-3. **Configuración de las variables de entorno:**
-   A partir del fichero `.env.template` genera el fichero `.env` y configura las variables de entorno conforme se indica en los comentarios de la plantilla.
+### B. Almacenamiento de Imágenes (Cloudinary)
 
-> [!IMPORTANT]
-> Si tu contraseña de PostgreSQL contiene caracteres especiales (como `@`, `#`, `!`), estos deben estar correctamente codificados en la variable `DATABASE_URL`. Por ejemplo, `@` se sustituye por `%40` y `!` por `%21`.
+1. Regístrate en [Cloudinary](https://cloudinary.com).
+2. Obtén tu **Cloud Name**, **API Key** y **API Secret** desde el Dashboard principal.
 
 ---
 
-## 4. Puesta en marcha del Backend (Node.js)
+## 3. Configuración del Entorno (Backend)
 
-Una vez la base de datos y el backend están configurados, solamente resta arrancar la API. Para ello se dispone de dos posibilidades. En el caso de querer lanzar el servidor en modo de desarrollo ejecuta el comando siguiente:
+1. **Instalación de dependencias:**
+
+```bash
+   npm install
+```
+
+2. **Variables de Entorno:** Copia el archivo `.env.template` como `.env` y rellena las variables.
+
+> [!IMPORTANT]
+>
+> - **DATABASE_URL:** Usa la URL con el sufijo `-pooler` proporcionada por Neon para la ejecución de la app.
+> - **DIRECT_URL:** Usa la URL directa (sin pooler) para tareas de mantenimiento si usas comandos de CLI de Prisma.
+
+3. **Generación del Cliente de Prisma:** Este paso vincula tu código con el motor de base de datos de Neon y el adaptador específico:
+
+```bash
+   npx prisma generate
+```
+
+---
+
+## 4. Ejecución y Pruebas
+
+### Modo Desarrollo
 
 ```bash
 npm run dev
 ```
 
-En el caso de querer únicamente lanzar el servidor sin estar este pendiente de cambios simplemente ejecuta el comando:
+### Documentación Interactiva (Swagger)
 
-```bash
-npm start
-```
+Si estás ejecutando el proyecto en local, accede a la documentación y pruebas de endpoints en:
+`http://localhost:3000/api-docs`
 
-### Documentación interactiva (Swagger)
+> [!TIP]
+> **Usuarios de Prueba:** Para facilitar las pruebas, las contraseñas de los usuarios del script `Inserts_users.sql` coinciden con el nombre del email (ej: `admin@gmail.com` → `admin`).
 
-Los endpoints implementados se han documentado mediante Swagger. Por lo tanto, una vez se haya lanzado el servidor, se puede acceder a la URL `http://localhost:3000/api-docs` para probar y evaluar cada uno de ellos.
+---
 
-> [!NOTE]
-> Si en el archivo `.env` se ha configurado un puerto distinto al `3000`, modifique dicho valor en la URL por el puerto especificado.
+## 5. Notas de Versión (v2.0.0)
+
+- **Cambio de infraestructura:** Se ha sustituido la base de datos local y el sistema de almacenamiento multimedia por servicios gestionados en **Neon** (PostgreSQL) y **Cloudinary**.
+- **Depreciación de endpoints:** Los endpoints previamente utilizados para servir imágenes locales han sido eliminados, ya que la gestión y entrega de archivos multimedia se realiza ahora directamente a través de Cloudinary.
+- **Persistencia:** La URL de las imágenes almacenadas en la base de datos ahora apunta directamente a los recursos en la nube.
