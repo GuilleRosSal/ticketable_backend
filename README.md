@@ -64,8 +64,10 @@ npm run dev
 
 ### Documentación Interactiva (Swagger)
 
-Si estás ejecutando el proyecto en local, accede a la documentación y pruebas de endpoints en:
-`http://localhost:3000/api-docs`
+Puedes explorar y probar los endpoints de la API de dos formas:
+
+- **Entorno Local:** `http://localhost:3000/api-docs`
+- **Entorno de Producción (Cloud):** https://ticketable-backend.onrender.com/api-docs
 
 > [!TIP]
 > **Usuarios de Prueba:** Para facilitar las pruebas, las contraseñas de los usuarios del script `Inserts_users.sql` coinciden con el nombre del email (ej: `admin@gmail.com` → `admin`).
@@ -74,6 +76,7 @@ Si estás ejecutando el proyecto en local, accede a la documentación y pruebas 
 
 ## 5. Notas de Versión (v2.0.0)
 
+- **Versión Online:** La API se encuentra desplegada y operativa en Render: https://ticketable-backend.onrender.com/
 - **Cambio de infraestructura:** Se ha sustituido la base de datos local y el sistema de almacenamiento multimedia por servicios gestionados en **Neon** (PostgreSQL) y **Cloudinary**.
 - **Depreciación de endpoints:** Los endpoints previamente utilizados para servir imágenes locales han sido eliminados, ya que la gestión y entrega de archivos multimedia se realiza ahora directamente a través de Cloudinary.
 - **Persistencia:** La URL de las imágenes almacenadas en la base de datos ahora apunta directamente a los recursos en la nube.
