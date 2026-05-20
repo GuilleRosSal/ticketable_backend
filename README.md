@@ -16,7 +16,7 @@ Este proyecto es una API REST para la gestión de tickets, migrada en su versió
 
 1. Crea un proyecto en [Neon](https://neon.com).
 2. Selecciona la región que más te convenga según tu residencia.
-3. En el panel de **SQL Editor**, ejecuta tus scripts de la carpeta `/database` en este orden:
+3. En el panel de **SQL Editor**, ejecuta tus scripts de la carpeta [Base de datos](https://drive.google.com/drive/folders/12b9lPw7HQzC_D7REeF_b9OkfvpfWoa3B?usp=sharing) en este orden:
    - `Ticket_management_create.sql`
    - `Ticket_management_triggers.sql`
    - `Inserts_categories.sql` e `Inserts_users.sql`.
